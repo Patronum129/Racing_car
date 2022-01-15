@@ -24,6 +24,8 @@ private:
 
 public:
 	p2List<Module*> collision_listeners;
+	bool			is_sensor;
+	float			rotation;
 };
 
 #endif // __PhysBody3D_H__
