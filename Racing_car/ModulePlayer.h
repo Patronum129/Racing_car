@@ -6,8 +6,17 @@
 struct PhysVehicle3D;
 
 #define MAX_ACCELERATION 1000.0f
-#define TURN_DEGREES 15.0f * DEGTORAD
-#define BRAKE_POWER 1000.0f
+#define TURN_DEGREES 20.0f * DEGTORAD
+#define BRAKE_POWER 200.0f
+
+enum PLAYER_STATE
+{
+	PREPARE,
+	READY,
+	STEADY,
+	GO,
+	FINISH
+};
 
 class ModulePlayer : public Module
 {
@@ -25,4 +34,8 @@ public:
 	float turn;
 	float acceleration;
 	float brake;
+
+	bool  following_camera;
+	PLAYER_STATE state;
+
 };
