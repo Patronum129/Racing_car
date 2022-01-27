@@ -6,17 +6,10 @@
 struct PhysVehicle3D;
 
 #define MAX_ACCELERATION 1000.0f
-#define TURN_DEGREES 20.0f * DEGTORAD
+#define TURN_DEGREES 10.0f * DEGTORAD
 #define BRAKE_POWER 200.0f
-
-enum PLAYER_STATE
-{
-	PREPARE,
-	READY,
-	STEADY,
-	GO,
-	FINISH
-};
+#define JUMP_COOLDOWN 3.0f
+#define JUMP_IMPULSE 700.0f
 
 class ModulePlayer : public Module
 {
@@ -28,14 +21,14 @@ public:
 	update_status Update(float dt);
 	bool CleanUp();
 
+	void OnCollision(PhysBody3D* body1, PhysBody3D* body2) override;
 public:
-
+	Timer jump_cooldown;
 	PhysVehicle3D* vehicle;
+	uint turboTimer;
 	float turn;
 	float acceleration;
 	float brake;
-
-	bool  following_camera;
-	PLAYER_STATE state;
+	bool slow;
 
 };

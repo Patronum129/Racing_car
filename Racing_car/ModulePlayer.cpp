@@ -8,7 +8,6 @@
 ModulePlayer::ModulePlayer(Application* app, bool start_enabled) : Module(app, start_enabled), vehicle(NULL)
 {
 	turn = acceleration = brake = 0.0f;
-	following_camera = false;
 }
 
 ModulePlayer::~ModulePlayer()
@@ -34,7 +33,7 @@ bool ModulePlayer::Start()
 	car.vertical_wing_offset.Set(0.6f, 1.2f, -1.25f);
 	car.upper_size.Set(0.7f, 0.4f, 1.6f);
 	car.upper_offset.Set(0.0f, 1.2f, -0.2f);
-	car.mass = 500.0f;
+	car.mass = 430.0f;
 	car.suspensionStiffness = 15.88f;
 	car.suspensionCompression = 0.83f;
 	car.suspensionDamping = 0.88f;
@@ -109,9 +108,9 @@ bool ModulePlayer::Start()
 	car.wheels[3].steering = false;
 
 	vehicle = App->physics->AddVehicle(car);
-	vehicle->SetPos(0, 12, 10);
-	state = PREPARE;
-	
+	vehicle->SetPos(14, 0, 90);
+	turboTimer = 0;
+
 	return true;
 }
 
@@ -131,6 +130,10 @@ update_status ModulePlayer::Update(float dt)
 
 	if(App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
 	{
+		if (slow == true)
+		{
+			vehicle->body->setLinearVelocity(vehicle->body->getLinearVelocity() / 1.03f);
+		}
 		acceleration = MAX_ACCELERATION;
 	}
 
@@ -151,8 +154,28 @@ update_status ModulePlayer::Update(float dt)
 		if (vehicle->GetKmh() > 0.0f)
 			brake = BRAKE_POWER;
 
-		if (vehicle->GetKmh() <= 0.0f)
-			acceleration = -(MAX_ACCELERATION / 2);
+		else
+		{
+			if (slow == true)
+			{
+				vehicle->body->setLinearVelocity(vehicle->body->getLinearVelocity() / 1.03f);
+			}
+			acceleration = -MAX_ACCELERATION ;
+		}
+	}
+	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
+	{
+		if ((jump_cooldown.Read() * 0.001) >= JUMP_COOLDOWN)
+		{
+			vehicle->Push(0.0f, JUMP_IMPULSE * 3, 0.0f);
+			jump_cooldown.Start();
+
+		}
+	}
+
+	if (turboTimer > 0)
+	{
+		acceleration = MAX_ACCELERATION * 9;
 	}
 
 	vehicle->ApplyEngineForce(acceleration);
@@ -166,6 +189,13 @@ update_status ModulePlayer::Update(float dt)
 	App->window->SetTitle(title);
 
 	return UPDATE_CONTINUE;
+}
+
+void ModulePlayer::OnCollision(PhysBody3D* body1, PhysBody3D* body2) {
+	if (body2->id == 8)
+	{
+		slow = true;
+	}
 }
 
 

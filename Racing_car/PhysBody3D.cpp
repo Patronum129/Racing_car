@@ -45,3 +45,8 @@ void PhysBody3D::SetPos(float x, float y, float z)
 	t.setOrigin(btVector3(x, y, z));
 	body->setWorldTransform(t);
 }
+
+void PhysBody3D::SetId(int id)
+{
+	this->id = id;
+}

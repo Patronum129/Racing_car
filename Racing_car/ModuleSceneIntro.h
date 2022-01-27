@@ -4,7 +4,7 @@
 #include "Globals.h"
 #include "Primitive.h"
 
-#define MAX_SNAKE 2
+#define INITIAL_TIME 60
 
 struct PhysBody3D;
 struct PhysMotor3D;
@@ -22,14 +22,6 @@ public:
 	void OnCollision(PhysBody3D* body1, PhysBody3D* body2);
 
 public:
-	/*
-	PhysBody3D* pb_snake[MAX_SNAKE];
-	Sphere s_snake[MAX_SNAKE];
-
-	PhysBody3D* pb_snake2[MAX_SNAKE];
-	Sphere s_snake2[MAX_SNAKE];
-	*/
-
 	PhysBody3D* pb_chassis;
 	Cube p_chassis;
 
@@ -41,4 +33,18 @@ public:
 
 	PhysMotor3D* left_wheel;
 	PhysMotor3D* right_wheel;
+
+	Plane* ground;
+
+	PhysBody3D* physSensor;
+
+	Cube wall[4];
+	Cube borders[4];
+	Cube map[20];
+	Cube grass[10];
+	Cube ramp[40];
+	Cube flag[3];
+
+	uint timer = INITIAL_TIME;
+	uint frames = 0;
 };
