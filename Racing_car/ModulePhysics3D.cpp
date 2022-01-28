@@ -104,6 +104,10 @@ update_status ModulePhysics3D::PreUpdate(float dt)
 				}
 			}
 		}
+		else
+		{
+			App->player->slow = false;
+		}
 	}
 
 	return UPDATE_CONTINUE;
@@ -213,7 +217,7 @@ PhysBody3D* ModulePhysics3D::AddBody(const Sphere& sphere, float mass, bool sens
 
 
 // ---------------------------------------------------------
-PhysBody3D* ModulePhysics3D::AddBody(const Cube& cube, Module* listener, float mass, bool sensor)
+PhysBody3D* ModulePhysics3D::AddBody(const Cube& cube, float mass)
 {
 	btCollisionShape* colShape = new btBoxShape(btVector3(cube.size.x*0.5f, cube.size.y*0.5f, cube.size.z*0.5f));
 	shapes.add(colShape);
@@ -232,12 +236,7 @@ PhysBody3D* ModulePhysics3D::AddBody(const Cube& cube, Module* listener, float m
 	btRigidBody* body = new btRigidBody(rbInfo);
 	PhysBody3D* pbody = new PhysBody3D(body);
 
-	pbody->is_sensor = sensor;
-	if (pbody->is_sensor == true)
-		body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
-	else
-		body->setCollisionFlags(body->getCollisionFlags() & ~btCollisionObject::CF_NO_CONTACT_RESPONSE);
-	pbody->collision_listeners.add(listener);
+	pbody->SetId(0);
 
 	body->setUserPointer(pbody);
 	world->addRigidBody(body);
@@ -369,6 +368,7 @@ PhysVehicle3D* ModulePhysics3D::AddVehicle(const VehicleInfo& info)
 	// ---------------------
 
 	PhysVehicle3D* pvehicle = new PhysVehicle3D(body, vehicle, info);
+	body->setUserPointer(pvehicle);
 	world->addVehicle(vehicle);
 	vehicles.add(pvehicle);
 

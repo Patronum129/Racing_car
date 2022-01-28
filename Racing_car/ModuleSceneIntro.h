@@ -40,11 +40,17 @@ public:
 
 	Cube wall[4];
 	Cube borders[4];
-	Cube map[20];
-	Cube grass[10];
-	Cube ramp[40];
+	Cube map[25];
+	Sphere ball[5];
+	Cube grass[7];
+	Cube ramp[20];
+	Cube turbo[5];
+	Cube checkpoints[4];
 	Cube flag[3];
 
+	uint lap = 1;
 	uint timer = INITIAL_TIME;
 	uint frames = 0;
+	bool starting;
+	int passedCheckpoints;
 };

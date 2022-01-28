@@ -33,7 +33,7 @@ bool ModulePlayer::Start()
 	car.vertical_wing_offset.Set(0.6f, 1.2f, -1.25f);
 	car.upper_size.Set(0.7f, 0.4f, 1.6f);
 	car.upper_offset.Set(0.0f, 1.2f, -0.2f);
-	car.mass = 430.0f;
+	car.mass = 350.0f;
 	car.suspensionStiffness = 15.88f;
 	car.suspensionCompression = 0.83f;
 	car.suspensionDamping = 0.88f;
@@ -108,7 +108,8 @@ bool ModulePlayer::Start()
 	car.wheels[3].steering = false;
 
 	vehicle = App->physics->AddVehicle(car);
-	vehicle->SetPos(14, 0, 90);
+	vehicle->collision_listeners.add(this);
+	vehicle->SetPos(14, 0, 160);
 	turboTimer = 0;
 
 	return true;
@@ -132,7 +133,7 @@ update_status ModulePlayer::Update(float dt)
 	{
 		if (slow == true)
 		{
-			vehicle->body->setLinearVelocity(vehicle->body->getLinearVelocity() / 1.03f);
+			vehicle->body->setLinearVelocity(vehicle->body->getLinearVelocity() / 1.01f);
 		}
 		acceleration = MAX_ACCELERATION;
 	}
@@ -158,7 +159,7 @@ update_status ModulePlayer::Update(float dt)
 		{
 			if (slow == true)
 			{
-				vehicle->body->setLinearVelocity(vehicle->body->getLinearVelocity() / 1.03f);
+				vehicle->body->setLinearVelocity(vehicle->body->getLinearVelocity() / 1.01f);
 			}
 			acceleration = -MAX_ACCELERATION ;
 		}
@@ -175,7 +176,7 @@ update_status ModulePlayer::Update(float dt)
 
 	if (turboTimer > 0)
 	{
-		acceleration = MAX_ACCELERATION * 9;
+		acceleration = MAX_ACCELERATION * 3;
 	}
 
 	vehicle->ApplyEngineForce(acceleration);
@@ -191,10 +192,49 @@ update_status ModulePlayer::Update(float dt)
 	return UPDATE_CONTINUE;
 }
 
-void ModulePlayer::OnCollision(PhysBody3D* body1, PhysBody3D* body2) {
-	if (body2->id == 8)
+void ModulePlayer::OnCollision(PhysBody3D* body1, PhysBody3D* body2) 
+{
+	//1-grass 2-turbo 3-checkpoints
+	if (body2->id == 2)
 	{
 		slow = true;
+	}
+	else if (body2->id == 3)
+	{
+		/*if (turboSoundActive)
+		{
+			App->audio->PlayFx(turboFx);
+			turboSoundActive = false;
+		}*/
+		turboTimer = 2;
+	}
+	else if (body2->id == 4 && App->scene_intro->checkpoints[0].wire == false)
+	{
+		if (App->scene_intro->passedCheckpoints == 2)
+		{
+			App->scene_intro->lap++;
+			App->scene_intro->checkpoints[0].wire = true;
+			//App->audio->PlayFx(metaFx);
+			App->scene_intro->timer += 7;
+			App->scene_intro->passedCheckpoints = 0;
+			App->scene_intro->checkpoints[1].wire = false;
+		}
+	}
+	else if (body2->id == 5 && App->scene_intro->checkpoints[1].wire == false)
+	{
+		//App->audio->PlayFx(checkpointFx);
+		App->scene_intro->passedCheckpoints++;
+		App->scene_intro->checkpoints[1].wire = true;
+		App->scene_intro->timer += 7;
+		App->scene_intro->checkpoints[2].wire = false;
+	}
+	else if (body2->id == 6 && App->scene_intro->checkpoints[2].wire == false)
+	{
+		//App->audio->PlayFx(checkpointFx);
+		App->scene_intro->passedCheckpoints++;
+		App->scene_intro->checkpoints[2].wire = true;
+		App->scene_intro->timer += 7;
+		App->scene_intro->checkpoints[0].wire = false;
 	}
 }
 
