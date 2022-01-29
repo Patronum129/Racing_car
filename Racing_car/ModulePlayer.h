@@ -35,4 +35,11 @@ public:
 	bool slow;
 	bool canMove;
 
+	bool playMusic;
+	bool turboSound;
+	int winFx;
+	int checkpointFx;
+	int loseFx;
+	int turboFx;
+
 };

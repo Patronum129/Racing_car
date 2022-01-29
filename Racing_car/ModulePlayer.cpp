@@ -19,13 +19,15 @@ bool ModulePlayer::Start()
 	LOG("Loading player");
 
 	canMove = false;
+	playMusic = true;
+	turboSound = true;
 
 	VehicleInfo car;
 
-	App->audio->LoadFx("Assets/victory.wav");
-	App->audio->LoadFx("Assets/defeat.wav");
-	App->audio->LoadFx("Assets/trumpet.wav");
-	App->audio->LoadFx("Assets/turbo.wav");
+	winFx = App->audio->LoadFx("Assets/victory.wav");
+	checkpointFx = App->audio->LoadFx("Assets/trumpet.wav");
+	loseFx = App->audio->LoadFx("Assets/defeat.wav");
+	turboFx = App->audio->LoadFx("Assets/turbo.wav");
 
 	// Car properties ----------------------------------------
 	car.chassis_size.Set(2.0f, 0.75f, 3.0f);
@@ -139,6 +141,8 @@ update_status ModulePlayer::Update(float dt)
 	if (INITIAL_TIME - App->scene_intro->timer == 5)
 	{
 		canMove = true;
+		if (playMusic) App->audio->PlayMusic("Assets/Po.ogg");
+		playMusic = false;
 	}
 	if (App->camera->finish == false)
 	{
@@ -195,13 +199,15 @@ update_status ModulePlayer::Update(float dt)
 
 		if (App->scene_intro->lap == 3)
 		{
-			App->audio->PlayFx(1, 0);
 			App->camera->finish = true;
+			App->audio->Pause();
+			App->audio->PlayFx(winFx);
 		}
 		if (App->scene_intro->timer <= 0)
 		{
-			App->audio->PlayFx(2, 0);
 			App->camera->finish = true;
+			App->audio->Pause();
+			App->audio->PlayFx(loseFx);
 		}
 	}
 
@@ -222,13 +228,17 @@ update_status ModulePlayer::Update(float dt)
 	vehicle->Render();
 
 	char title[80];
-	if (App->scene_intro->lap != 4)
+	if (App->scene_intro->lap != 3)
 	{
-		sprintf_s(title, "%.1f Km/h --- Lap %d --- Time Left %d s", vehicle->GetKmh(), App->scene_intro->lap, App->scene_intro->timer);
+		sprintf_s(title, "Velocity: %.1f Km/h  Lap: %d  Time Left: %d s", vehicle->GetKmh(), App->scene_intro->lap, App->scene_intro->timer);
 	}
-	if (App->scene_intro->lap == 4)
+	if (App->scene_intro->lap == 3)
 	{
 		sprintf_s(title, "Your won!");
+	}
+	if (App->scene_intro->timer <= 0)
+	{
+		sprintf_s(title, "Your lost!");
 	}
 	App->window->SetTitle(title);
 
@@ -244,14 +254,18 @@ void ModulePlayer::OnCollision(PhysBody3D* body1, PhysBody3D* body2)
 	}
 	else if (body2->id == 3)
 	{
-		App->audio->PlayFx(4, 0);
+		if (turboSound)
+		{
+			App->audio->PlayFx(turboFx);
+			turboSound = false;
+		}
 		turboTimer = 2;
 	}
 	else if (body2->id == 4 && App->scene_intro->checkpoints[0].wire == false)
 	{
 		if (App->scene_intro->passedCheckpoints == 2)
 		{
-			App->audio->PlayFx(3, 0);
+			App->audio->PlayFx(checkpointFx);
 			App->scene_intro->lap++;
 			App->scene_intro->checkpoints[0].wire = true;
 			App->scene_intro->timer += 15;
@@ -261,7 +275,7 @@ void ModulePlayer::OnCollision(PhysBody3D* body1, PhysBody3D* body2)
 	}
 	else if (body2->id == 5 && App->scene_intro->checkpoints[1].wire == false)
 	{
-		App->audio->PlayFx(3, 0);
+		App->audio->PlayFx(checkpointFx);
 		App->scene_intro->passedCheckpoints++;
 		App->scene_intro->checkpoints[1].wire = true;
 		App->scene_intro->timer += 15;
@@ -269,7 +283,7 @@ void ModulePlayer::OnCollision(PhysBody3D* body1, PhysBody3D* body2)
 	}
 	else if (body2->id == 6 && App->scene_intro->checkpoints[2].wire == false)
 	{
-		App->audio->PlayFx(3, 0);
+		App->audio->PlayFx(checkpointFx);
 		App->scene_intro->passedCheckpoints++;
 		App->scene_intro->checkpoints[2].wire = true;
 		App->scene_intro->timer += 15;
@@ -312,6 +326,11 @@ void ModulePlayer::checkpointReapear(int checkpointPassed)
 
 void ModulePlayer::Restart()
 {
+	if (App->camera->finish == true) {
+		App->audio->Resume();
+		App->audio->Replay();
+	}
+	App->audio->Replay();
 	turn = 0;
 	App->scene_intro->starting = true;
 	acceleration = 0;

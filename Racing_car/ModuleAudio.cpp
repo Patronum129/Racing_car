@@ -73,6 +73,8 @@ bool ModuleAudio::PlayMusic(const char* path, float fade_time)
 {
 	bool ret = true;
 	
+	Mix_VolumeMusic(MIX_MAX_VOLUME / 2);
+
 	if(music != NULL)
 	{
 		if(fade_time > 0.0f)
@@ -144,6 +146,8 @@ bool ModuleAudio::PlayFx(unsigned int id, int repeat)
 {
 	bool ret = false;
 
+	Mix_VolumeMusic(MIX_MAX_VOLUME / 2);
+
 	Mix_Chunk* chunk = NULL;
 	
 	if(fx.at(id-1, chunk) == true)
@@ -153,4 +157,16 @@ bool ModuleAudio::PlayFx(unsigned int id, int repeat)
 	}
 
 	return ret;
+}
+
+void ModuleAudio::Pause() {
+	Mix_PauseMusic();
+}
+
+void ModuleAudio::Resume() {
+	Mix_ResumeMusic();
+}
+
+void ModuleAudio::Replay() {
+	Mix_RewindMusic();
 }
