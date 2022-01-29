@@ -22,6 +22,8 @@ bool ModuleSceneIntro::Start()
 
 	starting = true;
 	passedCheckpoints = 0;
+    
+	App->audio->PlayMusic("Assets/Po.ogg");
 
 	wall[0].SetPos(0, 0, 256);
 	wall[0].size.x = 5;
