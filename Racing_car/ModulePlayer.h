@@ -21,6 +21,9 @@ public:
 	update_status Update(float dt);
 	bool CleanUp();
 
+	void Restart();
+	void checkpointReapear(int checkpointPassed);
+
 	void OnCollision(PhysBody3D* body1, PhysBody3D* body2) override;
 public:
 	Timer jump_cooldown;
@@ -30,5 +33,6 @@ public:
 	float acceleration;
 	float brake;
 	bool slow;
+	bool canMove;
 
 };

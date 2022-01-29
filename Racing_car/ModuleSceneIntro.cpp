@@ -442,6 +442,32 @@ bool ModuleSceneIntro::Start()
 	physSensor = App->physics->AddBody(checkpoints[2], 0);
 	physSensor->SetAsSensor(true);
 	physSensor->SetId(6);
+
+	//flags
+	flag[0].SetPos(21, 20, 223);
+	flag[0].size.x = 3;
+	flag[0].size.y = 3;
+	flag[0].size.z = 3;
+	flag[0].axis = false;
+	flag[0].color = Black;
+	App->physics->AddBody(flag[0], 0);
+
+	flag[1].SetPos(15, 20, 223);
+	flag[1].size.x = 3;
+	flag[1].size.y = 3;
+	flag[1].size.z = 3;
+	flag[1].axis = false;
+	flag[1].color = Black;
+	App->physics->AddBody(flag[1], 0);
+
+	flag[2].SetPos(9, 20, 223);
+	flag[2].size.x = 3;
+	flag[2].size.y = 3;
+	flag[2].size.z = 3;
+	flag[2].axis = false;
+	flag[2].color = Black;
+	App->physics->AddBody(flag[2], 0);
+
 	//ramps
 	ramp[0].SetPos(275, 1, 473);
 	ramp[0].SetRotation(20.0f, { 1,0,0 });
@@ -663,6 +689,11 @@ update_status ModuleSceneIntro::Update(float dt)
 		checkpoints[i].Render();
 	}
 
+	for (int i = 0; i < 3; i++)
+	{
+		flag[i].Render();
+	}
+
 	for (int i = 0; i < 20; i++)
 	{
 		ramp[i].Render();
@@ -677,6 +708,29 @@ update_status ModuleSceneIntro::Update(float dt)
 		timer--;
 	}
 	frames++;
+
+	secondsSinceInit = INITIAL_TIME - timer;
+
+	if (secondsSinceInit == 2 && starting == true)
+	{
+		flag[0].color = Red;
+	}
+	else if (secondsSinceInit == 3 && starting == true)
+	{
+		flag[1].color = Red;
+	}
+	else if (secondsSinceInit == 4 && starting == true)
+	{
+		flag[2].color = Red;
+	}
+	else if (secondsSinceInit == 5 && starting == true)
+	{
+		for (int i = 0; i < 3; i++)
+		{
+			flag[i].color = Green;
+			starting = false;
+		}
+	}
 
 	return UPDATE_CONTINUE;
 }

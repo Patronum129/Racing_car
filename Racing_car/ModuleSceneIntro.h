@@ -49,6 +49,7 @@ public:
 	Cube flag[3];
 
 	uint lap = 1;
+	uint secondsSinceInit;
 	uint timer = INITIAL_TIME;
 	uint frames = 0;
 	bool starting;
