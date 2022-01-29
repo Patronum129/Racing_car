@@ -134,8 +134,6 @@ update_status ModulePlayer::Update(float dt)
 	if (INITIAL_TIME - App->scene_intro->timer == 5)
 	{
 		canMove = true;
-		//if (playMusic) App->audio->PlayMusic("Assets/music.ogg", 0.0f);
-		//playMusic = false;
 	}
 	if (App->camera->finish == false)
 	{
@@ -193,14 +191,10 @@ update_status ModulePlayer::Update(float dt)
 		if (App->scene_intro->lap == 4)
 		{
 			App->camera->finish = true;
-			//App->audio->PlayMusic("Assets/win.ogg", 0.0f);
-			//App->audio->PlayFx(restartButtonFx);
 		}
 		if (App->scene_intro->timer <= 0)
 		{
 			App->camera->finish = true;
-			//App->audio->PlayMusic("Assets/lose.ogg", 0.0f);
-			//App->audio->PlayFx(restartButtonFx);
 		}
 	}
 
@@ -236,18 +230,13 @@ update_status ModulePlayer::Update(float dt)
 
 void ModulePlayer::OnCollision(PhysBody3D* body1, PhysBody3D* body2) 
 {
-	//1-grass 2-turbo 3-checkpoints
+	//1-grass 2-turbo 3,4,5-checkpoints
 	if (body2->id == 2)
 	{
 		slow = true;
 	}
 	else if (body2->id == 3)
 	{
-		/*if (turboSoundActive)
-		{
-			App->audio->PlayFx(turboFx);
-			turboSoundActive = false;
-		}*/
 		turboTimer = 2;
 	}
 	else if (body2->id == 4 && App->scene_intro->checkpoints[0].wire == false)
@@ -256,7 +245,6 @@ void ModulePlayer::OnCollision(PhysBody3D* body1, PhysBody3D* body2)
 		{
 			App->scene_intro->lap++;
 			App->scene_intro->checkpoints[0].wire = true;
-			//App->audio->PlayFx(metaFx);
 			App->scene_intro->timer += 7;
 			App->scene_intro->passedCheckpoints = 0;
 			App->scene_intro->checkpoints[1].wire = false;
@@ -264,7 +252,6 @@ void ModulePlayer::OnCollision(PhysBody3D* body1, PhysBody3D* body2)
 	}
 	else if (body2->id == 5 && App->scene_intro->checkpoints[1].wire == false)
 	{
-		//App->audio->PlayFx(checkpointFx);
 		App->scene_intro->passedCheckpoints++;
 		App->scene_intro->checkpoints[1].wire = true;
 		App->scene_intro->timer += 7;
@@ -272,7 +259,6 @@ void ModulePlayer::OnCollision(PhysBody3D* body1, PhysBody3D* body2)
 	}
 	else if (body2->id == 6 && App->scene_intro->checkpoints[2].wire == false)
 	{
-		//App->audio->PlayFx(checkpointFx);
 		App->scene_intro->passedCheckpoints++;
 		App->scene_intro->checkpoints[2].wire = true;
 		App->scene_intro->timer += 7;
@@ -334,6 +320,4 @@ void ModulePlayer::Restart()
 	App->scene_intro->flag[1].color = Black;
 	App->scene_intro->flag[2].color = Black;
 	App->camera->finish = false;
-	//playMusic = true;
-	//App->audio->PlayFx(startFx);
 }
