@@ -4,7 +4,7 @@
 #include "Globals.h"
 #include "Primitive.h"
 
-#define INITIAL_TIME 60
+#define INITIAL_TIME 100
 
 struct PhysBody3D;
 struct PhysMotor3D;

@@ -22,6 +22,10 @@ bool ModulePlayer::Start()
 
 	VehicleInfo car;
 
+	App->audio->LoadFx("Assets/victory.wav");
+	App->audio->LoadFx("Assets/sfx-defeat1.wav");
+	
+
 	// Car properties ----------------------------------------
 	car.chassis_size.Set(2.0f, 0.75f, 3.0f);
 	car.chassis_offset.Set(0.0f, 0.5f, 0.0f);
@@ -188,12 +192,14 @@ update_status ModulePlayer::Update(float dt)
 			acceleration = MAX_ACCELERATION * 3;
 		}
 
-		if (App->scene_intro->lap == 4)
+		if (App->scene_intro->lap == 3)
 		{
+			App->audio->PlayFx(1, 0);
 			App->camera->finish = true;
 		}
 		if (App->scene_intro->timer <= 0)
 		{
+			App->audio->PlayFx(2, 0);
 			App->camera->finish = true;
 		}
 	}
@@ -245,7 +251,7 @@ void ModulePlayer::OnCollision(PhysBody3D* body1, PhysBody3D* body2)
 		{
 			App->scene_intro->lap++;
 			App->scene_intro->checkpoints[0].wire = true;
-			App->scene_intro->timer += 7;
+			App->scene_intro->timer += 15;
 			App->scene_intro->passedCheckpoints = 0;
 			App->scene_intro->checkpoints[1].wire = false;
 		}
@@ -254,14 +260,14 @@ void ModulePlayer::OnCollision(PhysBody3D* body1, PhysBody3D* body2)
 	{
 		App->scene_intro->passedCheckpoints++;
 		App->scene_intro->checkpoints[1].wire = true;
-		App->scene_intro->timer += 7;
+		App->scene_intro->timer += 15;
 		App->scene_intro->checkpoints[2].wire = false;
 	}
 	else if (body2->id == 6 && App->scene_intro->checkpoints[2].wire == false)
 	{
 		App->scene_intro->passedCheckpoints++;
 		App->scene_intro->checkpoints[2].wire = true;
-		App->scene_intro->timer += 7;
+		App->scene_intro->timer += 15;
 		App->scene_intro->checkpoints[0].wire = false;
 	}
 }
