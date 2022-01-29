@@ -23,7 +23,8 @@ bool ModulePlayer::Start()
 	VehicleInfo car;
 
 	App->audio->LoadFx("Assets/victory.wav");
-	App->audio->LoadFx("Assets/sfx-defeat1.wav");
+	App->audio->LoadFx("Assets/defeat.wav");
+	App->audio->LoadFx("Assets/trumpet.wav");
 	
 
 	// Car properties ----------------------------------------
@@ -249,6 +250,7 @@ void ModulePlayer::OnCollision(PhysBody3D* body1, PhysBody3D* body2)
 	{
 		if (App->scene_intro->passedCheckpoints == 2)
 		{
+			App->audio->PlayFx(3, 0);
 			App->scene_intro->lap++;
 			App->scene_intro->checkpoints[0].wire = true;
 			App->scene_intro->timer += 15;
@@ -258,6 +260,7 @@ void ModulePlayer::OnCollision(PhysBody3D* body1, PhysBody3D* body2)
 	}
 	else if (body2->id == 5 && App->scene_intro->checkpoints[1].wire == false)
 	{
+		App->audio->PlayFx(3, 0);
 		App->scene_intro->passedCheckpoints++;
 		App->scene_intro->checkpoints[1].wire = true;
 		App->scene_intro->timer += 15;
@@ -265,6 +268,7 @@ void ModulePlayer::OnCollision(PhysBody3D* body1, PhysBody3D* body2)
 	}
 	else if (body2->id == 6 && App->scene_intro->checkpoints[2].wire == false)
 	{
+		App->audio->PlayFx(3, 0);
 		App->scene_intro->passedCheckpoints++;
 		App->scene_intro->checkpoints[2].wire = true;
 		App->scene_intro->timer += 15;
