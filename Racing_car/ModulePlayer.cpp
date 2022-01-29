@@ -25,7 +25,7 @@ bool ModulePlayer::Start()
 	App->audio->LoadFx("Assets/victory.wav");
 	App->audio->LoadFx("Assets/defeat.wav");
 	App->audio->LoadFx("Assets/trumpet.wav");
-	
+	App->audio->LoadFx("Assets/turbo.wav");
 
 	// Car properties ----------------------------------------
 	car.chassis_size.Set(2.0f, 0.75f, 3.0f);
@@ -244,6 +244,7 @@ void ModulePlayer::OnCollision(PhysBody3D* body1, PhysBody3D* body2)
 	}
 	else if (body2->id == 3)
 	{
+		App->audio->PlayFx(4, 0);
 		turboTimer = 2;
 	}
 	else if (body2->id == 4 && App->scene_intro->checkpoints[0].wire == false)
