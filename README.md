@@ -30,6 +30,7 @@ We are in Physics II Subject on CITM.
 - turbo will increase the speed of the car for a short time
 - You need to be prepared for the ramps or you won't be able to pass and it will most likely trap you in an area
 
-## Link to Github
+## Link to Release
 
-https://github.com/Patronum129/The-agabagop
+https://github.com/Patronum129/The-agabagop/releases/tag/V1.0
+
